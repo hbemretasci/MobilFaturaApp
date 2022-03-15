@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">Mobil Fatura</string>
+
+    <!-- Login Screen -->
+    <string name="login_1_label">Kullanıcı Kodu</string>
+    <string name="login_2_label">Şifre</string>
+    <string name="cont_pass">Şifreyi Göster-Gizle</string>
+    <string name="cont_logo">Logo</string>
+    <string name="button_giris">Giriş Yap</string>
+
+    <!-- Bottom Navigation -->
+    <string name="bottom_label_fatura">Oluştur</string>
+    <string name="bottom_label_belgeler">Faturalar</string>
+    <string name="bottom_label_iptal">İptal-İtiraz</string>
+    <string name="cont_fatura">Fatura Oluştur</string>
+    <string name="cont_belgeler">Düzenlenen Belgeler</string>
+    <string name="cont_iptal">İptal/İtiraz Talepleri</string>
+
+    <!-- Fatura Olustur -->
+    <string name="tab_label_baslik">Başlık</string>
+    <string name="tab_label_kalemler">Kalemler</string>
+    <string name="tab_label_toplam">Toplam</string>
+    <string name="cont_baslik_tabs">Fatura Başlığı</string>
+    <string name="cont_kalemler_tabs">Fatura Kalemleri</string>
+    <string name="cont_toplam_tabs">Fatura Toplamı</string>
+
+    <!-- Fatura Olustur - Başlık -->
+    <string name="label_section1">Fatura Bilgileri</string>
+    <string name="label_duzenlenme_tarihi">Tarihi</string>
+    <string name="label_duzenlenme_saati">Saati</string>
+    <string name="label_para_birimi">Para Birimi</string>
+    <string name="label_doviz_kuru">Döviz Kuru</string>
+    <string name="label_fatura_tipi">Fatura Tipi</string>
+    <string name="cont_textfield_date">Fatura Tarihi</string>
+
+    <string name="label_section2">Alıcı Bilgileri</string>
+    <string name="label_vkn_tckn">VKN/TCKN</string>
+    <string name="button_bilgileri_getir">Bilgileri Getir</string>
+    <string name="cont_vkn_tckn_error">Vkn Giriş Hatası</string>
+    <string name="label_unvan">Ünvan</string>
+    <string name="label_vergi_dairesi">Vergi Dairesi</string>
+    <string name="label_adi">Adı</string>
+    <string name="label_soyadi">Soyadı</string>
+    <string name="label_adres">Adres</string>
+
+    <string name="label_section3">İrsaliye Bilgisi</string>
+    <string name="label_irsaliye_numarasi">İrsaliye Numarası</string>
+    <string name="label_irsaliye_tarihi">İrsaliye Tarihi</string>
+    <string name="cont_textfield_irsaliye_date">İrsaliye Tarihi</string>
+
+    <!-- Top Bar & Dialog -->
+    <string name="cont_exit">Çıkış</string>
+    <string name="cont_back">Geri</string>
+    <string name="exit_dialog_message">Çıkmak istediğinizden emin misiniz?</string>
+    <string name="exit_dialog_confirm_message">Evet</string>
+    <string name="exit_dialog_cancel_message">Hayır</string>
+
+    <!-- Bildirimler -->
+    <string name="retry">Yeniden Dene!</string>
+    <string name="data_not_found_cari">Cari hareket bulunamadı.</string>
+    <string name="data_not_found_notification">Burada hiç bildirim yok.</string>
+    <string name="data_not_found_document">Burada hiç evrak yok.</string>
+    <string name="data_not_found_message">Sohbet henüz başlamamış.</string>
+    <string name="data_not_found_person">Burada hiç kimse yok.</string>
+    <string name="cont_doc">Ekli döküman mevcut.</string>
+
+    <!-- Sohbet -->
+    <string name="caption_post_time">Yayınlanma</string>
+    <string name="caption_read_time">Okunma</string>
+
+    <!-- Evraklar -->
+    <string name="cont_unread">Okunmamış İletiler</string>
+    <string name="cont_read">İletiler</string>
+    <string name="cont_send">Gönder</string>
+    <string name="message_box_ph">Mesaj</string>
+    <string name="jumpBottom">Son Mesaja Git</string>
+
+    <!-- Cari -->
+    <string name="caption_cari">Cari Hareket Listesi</string>
+
+</resources>
