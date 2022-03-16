@@ -15,7 +15,7 @@
         android:theme="@style/Theme.Fatura">
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:theme="@style/Theme.Fatura">
             <intent-filter>

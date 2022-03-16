@@ -1,8 +1,6 @@
 package com.codmine.fatura
 
 import android.os.Bundle
-import android.view.WindowManager
-import android.view.inputmethod.InputMethod
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
@@ -16,25 +14,12 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //WindowCompat.setDecorFitsSystemWindows(window, true)
-
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             FaturaTheme {
-
-                val navController = rememberNavController()
-                MainNavigationGraph(navController = navController)
-
-
-                /*
-                ProvideWindowInsets(
-                    windowInsetsAnimationsEnabled = false,
-                    consumeWindowInsets = false
-                ) {
-                    val navController = rememberNavController()
-                    MainNavigationGraph(navController = navController)
+                ProvideWindowInsets {
+                    MainNavigationGraph()
                 }
-                 */
             }
         }
     }

@@ -3,8 +3,6 @@ package com.codmine.fatura.view.faturaolustur
 import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.relocation.BringIntoViewRequester
-import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,8 +21,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -33,12 +29,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.codmine.fatura.R
+import com.codmine.fatura.components.DateField
+import com.codmine.fatura.components.ListField
+import com.codmine.fatura.components.NumberField
 import com.codmine.fatura.components.SectionHeader
 import com.codmine.fatura.viewmodel.FaturaViewModel
 import com.google.accompanist.insets.*
 import com.google.accompanist.pager.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -51,10 +48,9 @@ fun FaturaOlusturScreen(gibNo : String,
 
     Column(
         modifier = Modifier
-            //.systemBarsPadding()
+            .fillMaxSize()
+            .statusBarsPadding()
             .padding(paddingValues)
-            //.statusBarsPadding()
-            //.imePadding()
     ) {
         FaturaOlusturTabs(pagerState = pagerState)
         HorizontalPager(count = faturaOlusturTabItems.size, state = pagerState) { page ->
@@ -63,8 +59,8 @@ fun FaturaOlusturScreen(gibNo : String,
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class, androidx.compose.material.ExperimentalMaterialApi::class,
-    com.google.accompanist.insets.ExperimentalAnimatedInsets::class
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class,
+    ExperimentalAnimatedInsets::class
 )
 @Composable
 fun Baslik(viewModel: FaturaViewModel = hiltViewModel()) {
@@ -76,17 +72,13 @@ fun Baslik(viewModel: FaturaViewModel = hiltViewModel()) {
 
     Column(modifier = Modifier
         .fillMaxSize()
-        //.padding(bottom = 50.dp)
-        //.paddingFromBaseline(bottom = 20.dp)
-        //.imePadding()
         .verticalScroll(scrollState)
-    )
-    {
+        .imePadding()
+    ) {
         FaturaBilgileri(viewModel, context, focusManager, keyboardController)
         AlıcıBilgileri(viewModel, context, focusManager)
         IrsaliyeBilgisi(viewModel, context, focusManager)
     }
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -96,8 +88,6 @@ fun IrsaliyeBilgisi(
     context: Context,
     focusManager: FocusManager)
 {
-    val coroutineScope = rememberCoroutineScope()
-    val bringIntoViewRequester = BringIntoViewRequester()
     var faturaIrsaliyeNum by remember { viewModel.faturaIrsaliyeNum }
     val faturaIrsaliyeDate by remember { viewModel.faturaIrsaliyeDate }
 
@@ -113,15 +103,7 @@ fun IrsaliyeBilgisi(
         OutlinedTextField(
             modifier = Modifier
                 .weight(.5f)
-                .padding(horizontal = 12.dp)
-                .bringIntoViewRequester(bringIntoViewRequester)
-                .onFocusEvent { focusState ->
-                    if (focusState.isFocused) {
-                        coroutineScope.launch {
-                            bringIntoViewRequester.bringIntoView()
-                        }
-                    }
-                },
+                .padding(horizontal = 12.dp),
             value = faturaIrsaliyeNum,
             onValueChange = { faturaIrsaliyeNum = it },
             visualTransformation = VisualTransformation.None,
@@ -158,15 +140,7 @@ fun IrsaliyeBilgisi(
         OutlinedTextField(
             modifier = Modifier
                 .weight(.5f)
-                .padding(horizontal = 12.dp)
-                .bringIntoViewRequester(bringIntoViewRequester)
-                .onFocusEvent { focusState ->
-                    if (focusState.isFocused) {
-                        coroutineScope.launch {
-                            bringIntoViewRequester.bringIntoView()
-                        }
-                    }
-                },
+                .padding(horizontal = 12.dp),
             value = faturaIrsaliyeNum,
             onValueChange = { faturaIrsaliyeNum = it },
             visualTransformation = VisualTransformation.None,
@@ -202,8 +176,6 @@ fun AlıcıBilgileri(
     context: Context,
     focusManager: FocusManager)
 {
-    val scope = rememberCoroutineScope()
-
     var faturaVknTckn by remember { viewModel.faturaVknTckn }
     var isErrorVknTckn by remember { mutableStateOf(false) }
 
@@ -362,74 +334,45 @@ fun FaturaBilgileri(
     var expandedParaBirimiList by remember { mutableStateOf(false) }
     var selectedParaBirimi by remember { mutableStateOf(faturaParaBirimiList[0]) }
 
-    var faturaDovizKuru by remember { mutableStateOf("0.00") }
+    var faturaDovizKuru by remember { mutableStateOf("0") }
 
     LaunchedEffect(key1 = true) {
         viewModel.getCurrentDateAndTime()
     }
 
     SectionHeader(label = stringResource(id = R.string.label_section1))
+
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 12.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        OutlinedTextField(
+        DateField(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
-            value = faturaDate,
-            readOnly = true,
-            onValueChange = { },
-            label = { Text (stringResource(id = R.string.label_duzenlenme_tarihi))},
-            trailingIcon = {
-                IconButton(onClick = { viewModel.selectDate(context) }) {
-                    Icon(imageVector = Icons.Filled.CalendarToday,
-                        contentDescription = stringResource(id = R.string.cont_textfield_date)
-                    )
-                }
-            }
+            fieldValue = faturaDate,
+            label = R.string.label_duzenlenme_tarihi,
+            icon = Icons.Filled.CalendarToday,
+            iconDesc = R.string.cont_textfield_date,
+            onSelectFunction = { viewModel.selectDate(context) }
         )
-        ExposedDropdownMenuBox(
+
+        ListField(
             modifier = Modifier
                 .weight(.5f)
                 .padding(vertical = 6.dp, horizontal = 12.dp),
-            expanded = expandedFaturaTipiList,
-            onExpandedChange = {
-                expandedFaturaTipiList = !expandedFaturaTipiList
+            expandedStatus = expandedFaturaTipiList,
+            fieldValue = selectedFaturaTipi,
+            label = R.string.label_fatura_tipi,
+            list = faturaTipiList,
+            onExpandedChangeFunction = { expandedFaturaTipiList = !expandedFaturaTipiList },
+            onDismissRequestFunction = { expandedFaturaTipiList = false },
+            onClickFunction = {
+                selectedFaturaTipi = it
+                expandedFaturaTipiList = false
             }
-        ) {
-            TextField(
-                value = selectedFaturaTipi,
-                readOnly = true,
-                onValueChange = { },
-                label = { Text(stringResource(id = R.string.label_fatura_tipi)) },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = expandedFaturaTipiList
-                    )
-                },
-                colors = TextFieldDefaults.outlinedTextFieldColors()
-            )
-            ExposedDropdownMenu(
-                expanded = expandedFaturaTipiList,
-                onDismissRequest = {
-                    expandedFaturaTipiList = false
-                }
-            ) {
-                faturaTipiList.forEach { selectionFaturaTipi ->
-                    DropdownMenuItem(
-                        text = { Text(text = selectionFaturaTipi) },
-                        onClick = {
-                            selectedFaturaTipi = selectionFaturaTipi
-                            expandedFaturaTipiList = false
-                        }
-                    )
-                }
-            }
-        }
+        )
     }
 
     Row (
@@ -437,59 +380,32 @@ fun FaturaBilgileri(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        OutlinedTextField(
-            modifier = Modifier
-                .weight(.5f)
-                .padding(horizontal = 12.dp),
-            value = faturaDovizKuru,
-            onValueChange = { if (it.length <= 8) faturaDovizKuru = it },
-            visualTransformation = VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = {
-                keyboardController?.hide()
-                focusManager.clearFocus()
-            }),
-            label = { Text (stringResource(id = R.string.label_doviz_kuru))}
+        NumberField(
+            modifier = Modifier.weight(.5f).padding(horizontal = 12.dp),
+            fieldValue = faturaDovizKuru ,
+            label = R.string.label_doviz_kuru,
+            keyboardController = keyboardController,
+            focusManager = focusManager,
+            onValueChangeFunction = { if (it.length <= 8) faturaDovizKuru = it }
         )
-        ExposedDropdownMenuBox(
+
+        ListField(
             modifier = Modifier
                 .weight(.5f)
                 .padding(vertical = 6.dp, horizontal = 12.dp),
-            expanded = expandedParaBirimiList,
-            onExpandedChange = {
-                expandedParaBirimiList = !expandedParaBirimiList
+            expandedStatus = expandedParaBirimiList,
+            fieldValue = selectedParaBirimi,
+            label = R.string.label_para_birimi,
+            list = faturaParaBirimiList,
+            onExpandedChangeFunction = { expandedParaBirimiList = !expandedParaBirimiList },
+            onDismissRequestFunction = { expandedParaBirimiList = false },
+            onClickFunction = {
+                selectedParaBirimi = it
+                expandedParaBirimiList = false
             }
-        ) {
-            TextField(
-                value = selectedParaBirimi,
-                readOnly = true,
-                onValueChange = { },
-                label = { Text(stringResource(id = R.string.label_para_birimi)) },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = expandedParaBirimiList
-                    )
-                },
-                colors = TextFieldDefaults.outlinedTextFieldColors()
-            )
-            ExposedDropdownMenu(
-                expanded = expandedParaBirimiList,
-                onDismissRequest = {
-                    expandedParaBirimiList = false
-                }
-            ) {
-                faturaParaBirimiList.forEach { selectionParaBirimi ->
-                    DropdownMenuItem(
-                        text = { Text(text = selectionParaBirimi) },
-                        onClick = {
-                            selectedParaBirimi = selectionParaBirimi
-                            expandedParaBirimiList = false
-                        }
-                    )
-                }
-            }
-        }
+        )
     }
+
 }
 
 @Composable

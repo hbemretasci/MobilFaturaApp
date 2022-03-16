@@ -94,7 +94,6 @@ fun FaturaTheme(
         colorScheme = myColorScheme,
         typography = FaturaTypography
     ) {
-        // TODO (M3): MaterialTheme doesn't provide LocalIndication, remove when it does
         val rippleIndication = rememberRipple()
         CompositionLocalProvider(
             LocalIndication provides rippleIndication,
