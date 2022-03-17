@@ -1,5 +1,6 @@
 package com.codmine.fatura.view
 
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
@@ -14,10 +15,12 @@ import com.codmine.fatura.viewmodel.FaturaViewModel
 fun MainScreen(gibNo : String, vkNo : String, passText : String) {
 
     val bottomNavController = rememberNavController()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
-        bottomBar = { BottomNavigationScreen(bottomNavController) }
+        bottomBar = { BottomNavigationScreen(bottomNavController) },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) {
-        BottomNavigationGraph(gibNo, vkNo, passText, bottomNavController, it)
+        BottomNavigationGraph(gibNo, vkNo, passText, bottomNavController, snackbarHostState, it)
     }
 }

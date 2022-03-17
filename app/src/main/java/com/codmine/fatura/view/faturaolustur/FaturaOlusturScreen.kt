@@ -10,11 +10,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -23,25 +24,26 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.codmine.fatura.R
-import com.codmine.fatura.components.DateField
-import com.codmine.fatura.components.ListField
-import com.codmine.fatura.components.NumberField
-import com.codmine.fatura.components.SectionHeader
+import com.codmine.fatura.components.*
 import com.codmine.fatura.viewmodel.FaturaViewModel
 import com.google.accompanist.insets.*
 import com.google.accompanist.pager.*
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun FaturaOlusturScreen(gibNo : String,
                         vkNo : String,
                         passText : String,
+                        snackbarHostState: SnackbarHostState,
                         paddingValues : PaddingValues) {
 
     val pagerState = rememberPagerState()
@@ -54,7 +56,11 @@ fun FaturaOlusturScreen(gibNo : String,
     ) {
         FaturaOlusturTabs(pagerState = pagerState)
         HorizontalPager(count = faturaOlusturTabItems.size, state = pagerState) { page ->
-            faturaOlusturTabItems[page].screen()
+            when (page) {
+                0 -> Baslik(snackbarHostState)
+                1 -> Kalemler()
+                2 -> Toplam()
+            }
         }
     }
 }
@@ -63,7 +69,10 @@ fun FaturaOlusturScreen(gibNo : String,
     ExperimentalAnimatedInsets::class
 )
 @Composable
-fun Baslik(viewModel: FaturaViewModel = hiltViewModel()) {
+fun Baslik(
+    snackbarHostState: SnackbarHostState,
+    viewModel: FaturaViewModel = hiltViewModel()
+) {
 
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -75,8 +84,8 @@ fun Baslik(viewModel: FaturaViewModel = hiltViewModel()) {
         .verticalScroll(scrollState)
         .imePadding()
     ) {
-        FaturaBilgileri(viewModel, context, focusManager, keyboardController)
-        AlıcıBilgileri(viewModel, context, focusManager)
+        FaturaBilgileri(viewModel, context, focusManager, snackbarHostState ,keyboardController)
+        AlıcıBilgileri(viewModel, context, focusManager, snackbarHostState, keyboardController)
         IrsaliyeBilgisi(viewModel, context, focusManager)
     }
 }
@@ -174,8 +183,12 @@ fun IrsaliyeBilgisi(
 fun AlıcıBilgileri(
     viewModel: FaturaViewModel,
     context: Context,
-    focusManager: FocusManager)
+    focusManager: FocusManager,
+    snackbarHostState: SnackbarHostState,
+    keyboardController: SoftwareKeyboardController?)
 {
+    val scope = rememberCoroutineScope()
+
     var faturaVknTckn by remember { viewModel.faturaVknTckn }
     var isErrorVknTckn by remember { mutableStateOf(false) }
 
@@ -190,37 +203,42 @@ fun AlıcıBilgileri(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 12.dp),
+            .padding(bottom = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        OutlinedTextField(
+        NumberFieldDoneWithError(
             modifier = Modifier
                 .weight(.6f)
                 .padding(horizontal = 12.dp),
-            value = faturaVknTckn,
-            onValueChange = {
-                if (it.length <= 11) faturaVknTckn = it
+            fieldValue = faturaVknTckn,
+            errorValue = isErrorVknTckn,
+            errorIcon = Icons.Filled.Error,
+            errorIconDesc = R.string.cont_vkn_tckn_error,
+            label = R.string.label_vkn_tckn,
+            onValueChangeFunction = {
+                if ((it.length <= 11) && (!it.contains(",")) && (!it.contains("."))) faturaVknTckn = it
                 isErrorVknTckn = (it.length < 10)
-                            },
-            trailingIcon = {
-                if (isErrorVknTckn) Icon(
-                    Icons.Filled.Error,
-                    stringResource(id = R.string.cont_vkn_tckn_error),
-                    tint = androidx.compose.material3.MaterialTheme.colorScheme.error) },
-            isError = isErrorVknTckn,
-            visualTransformation = VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }),
-            label = { Text (stringResource(id = R.string.label_vkn_tckn))},
+            },
+            onDoneFunction = {
+                keyboardController?.hide()
+                focusManager.clearFocus()
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Mükellef bilgileri getirildi.",
+                        duration = SnackbarDuration.Short)
+                }
+            }
         )
         OutlinedButton(
             onClick = {
-            /* Bilgileri Getir */
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Mükellef bilgileri getirildi.",
+                        duration = SnackbarDuration.Short)
+                }
             },
-            modifier = Modifier
-                .weight(.4f)
-                .padding(horizontal = 12.dp)
+            modifier = Modifier.weight(.4f).padding(horizontal = 12.dp)
         ) {
             Text(stringResource(id = R.string.button_bilgileri_getir))
         }
@@ -229,87 +247,70 @@ fun AlıcıBilgileri(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 12.dp),
+            .padding(bottom = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        OutlinedTextField(
+        CopyField(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
-            value = faturaUnvan,
-            onValueChange = { faturaUnvan = it },
-            visualTransformation = VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }),
-            singleLine = true,
-            label = { Text (stringResource(id = R.string.label_unvan))},
+            fieldValue = faturaUnvan,
+            label = R.string.label_unvan,
+            focusManager = focusManager,
+            onValueChangeFunction = { faturaUnvan = it }
         )
-        OutlinedTextField(
+        CopyField(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
-            value = faturaVergiDairesi,
-            onValueChange = { faturaVergiDairesi = it },
-            visualTransformation = VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }),
-            singleLine = true,
-            label = { Text (stringResource(id = R.string.label_vergi_dairesi))},
+            fieldValue = faturaVergiDairesi,
+            label = R.string.label_vergi_dairesi,
+            focusManager = focusManager,
+            onValueChangeFunction = { faturaVergiDairesi = it }
         )
     }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 12.dp),
+            .padding(bottom = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        OutlinedTextField(
+        CopyField(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
-            value = faturaAdi,
-            onValueChange = { faturaAdi = it },
-            visualTransformation = VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }),
-            singleLine = true,
-            label = { Text (stringResource(id = R.string.label_adi)) },
+            fieldValue = faturaAdi,
+            label = R.string.label_adi,
+            focusManager = focusManager,
+            onValueChangeFunction = { faturaAdi = it }
         )
-        OutlinedTextField(
+        CopyField(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
-            value = faturaSoyadi,
-            onValueChange = { faturaSoyadi = it },
-            visualTransformation = VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }),
-            singleLine = true,
-            label = { Text (stringResource(id = R.string.label_soyadi)) },
+            fieldValue = faturaSoyadi,
+            label = R.string.label_soyadi,
+            focusManager = focusManager,
+            onValueChangeFunction = { faturaSoyadi = it }
         )
     }
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 12.dp),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        OutlinedTextField(
+        CopyField(
             modifier = Modifier
-                .fillMaxWidth()
+                .weight(.5f)
                 .padding(horizontal = 12.dp),
-            value = faturaAdres,
-            onValueChange = { faturaAdres = it },
-            visualTransformation = VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }),
-            singleLine = true,
-            label = { Text (stringResource(id = R.string.label_adres)) },
+            fieldValue = faturaAdres,
+            label = R.string.label_adres,
+            focusManager = focusManager,
+            onValueChangeFunction = { faturaAdres = it }
         )
     }
 
@@ -321,8 +322,11 @@ fun FaturaBilgileri(
     viewModel: FaturaViewModel,
     context: Context,
     focusManager: FocusManager,
+    snackbarHostState: SnackbarHostState,
     keyboardController: SoftwareKeyboardController?)
 {
+    val scope = rememberCoroutineScope()
+
     val faturaDate by remember { viewModel.faturaDate }
     val faturaTime by remember { viewModel.faturaTime }
 
@@ -334,7 +338,7 @@ fun FaturaBilgileri(
     var expandedParaBirimiList by remember { mutableStateOf(false) }
     var selectedParaBirimi by remember { mutableStateOf(faturaParaBirimiList[0]) }
 
-    var faturaDovizKuru by remember { mutableStateOf("0") }
+    var faturaDovizKuru by remember { mutableStateOf("0.0") }
 
     LaunchedEffect(key1 = true) {
         viewModel.getCurrentDateAndTime()
@@ -343,7 +347,9 @@ fun FaturaBilgileri(
     SectionHeader(label = stringResource(id = R.string.label_section1))
 
     Row(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 6.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -380,15 +386,29 @@ fun FaturaBilgileri(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        NumberField(
-            modifier = Modifier.weight(.5f).padding(horizontal = 12.dp),
-            fieldValue = faturaDovizKuru ,
+        NumberFieldDone(
+            modifier = Modifier
+                .weight(.5f)
+                .padding(horizontal = 12.dp),
+            fieldValue = faturaDovizKuru,
             label = R.string.label_doviz_kuru,
-            keyboardController = keyboardController,
-            focusManager = focusManager,
-            onValueChangeFunction = { if (it.length <= 8) faturaDovizKuru = it }
+            onValueChangeFunction = {
+                if (it.length <= 8 && !it.contains(",")) faturaDovizKuru = it },
+            onDoneFunction = {
+                keyboardController?.hide()
+                try {
+                    faturaDovizKuru = faturaDovizKuru.toFloat().toString()
+                } catch (e: NumberFormatException) {
+                    faturaDovizKuru = "0.0"
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "Kur bilgisi 0.0 olarak alındı.",
+                            duration = SnackbarDuration.Short)
+                    }
+                }
+                focusManager.moveFocus(focusDirection = FocusDirection.Next)
+            }
         )
-
         ListField(
             modifier = Modifier
                 .weight(.5f)
@@ -405,7 +425,6 @@ fun FaturaBilgileri(
             }
         )
     }
-
 }
 
 @Composable

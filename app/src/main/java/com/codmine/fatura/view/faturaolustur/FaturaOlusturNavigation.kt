@@ -23,10 +23,10 @@ import kotlinx.coroutines.launch
 
 typealias ComposableFun = @Composable () -> Unit
 
-sealed class FaturaOlusturTabs (val label: Int, val icon: ImageVector, val cont:Int, var screen : ComposableFun) {
-    object Baslik: FaturaOlusturTabs(R.string.tab_label_baslik, Icons.Filled.AccountBox , R.string.cont_baslik_tabs, { Baslik() } )
-    object Kalemler: FaturaOlusturTabs(R.string.tab_label_kalemler, Icons.Filled.ViewList, R.string.cont_kalemler_tabs, { Kalemler() })
-    object Toplam: FaturaOlusturTabs(R.string.tab_label_toplam, Icons.Filled.FactCheck, R.string.cont_toplam_tabs, { Toplam() })
+sealed class FaturaOlusturTabs (val label: Int, val icon: ImageVector, val cont:Int) {
+    object Baslik: FaturaOlusturTabs(R.string.tab_label_baslik, Icons.Filled.AccountBox , R.string.cont_baslik_tabs)
+    object Kalemler: FaturaOlusturTabs(R.string.tab_label_kalemler, Icons.Filled.ViewList, R.string.cont_kalemler_tabs)
+    object Toplam: FaturaOlusturTabs(R.string.tab_label_toplam, Icons.Filled.FactCheck, R.string.cont_toplam_tabs)
 }
 
 val faturaOlusturTabItems = listOf(

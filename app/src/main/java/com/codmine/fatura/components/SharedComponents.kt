@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,17 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import com.codmine.fatura.R
 
 @Composable
@@ -128,11 +127,56 @@ fun ListField(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun NumberField(
+fun NumberFieldDone(
     modifier : Modifier,
     fieldValue : String,
     label : Int,
-    keyboardController : SoftwareKeyboardController?,
+    onValueChangeFunction : (String) -> Unit,
+    onDoneFunction : () -> Unit
+) {
+    OutlinedTextField(
+        modifier = modifier.onFocusChanged { if (!it.isFocused) onDoneFunction() },
+        value = fieldValue,
+        onValueChange = onValueChangeFunction,
+        visualTransformation = VisualTransformation.None,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = { onDoneFunction() }),
+        label = { Text (stringResource(id = label)) }
+    )
+}
+
+@Composable
+fun NumberFieldDoneWithError(
+    modifier : Modifier,
+    fieldValue : String,
+    errorValue : Boolean,
+    errorIcon : ImageVector,
+    errorIconDesc : Int,
+    label : Int,
+    onValueChangeFunction : (String) -> Unit,
+    onDoneFunction : () -> Unit
+) {
+    OutlinedTextField(
+        modifier = modifier,
+        value = fieldValue,
+        onValueChange = onValueChangeFunction,
+        trailingIcon = {
+            if (errorValue) Icon(errorIcon,
+                stringResource(id = errorIconDesc),
+                tint = androidx.compose.material3.MaterialTheme.colorScheme.error) },
+        isError = errorValue,
+        visualTransformation = VisualTransformation.None,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = { onDoneFunction() }),
+        label = { Text (stringResource(id = label)) }
+    )
+}
+
+@Composable
+fun CopyField(
+    modifier : Modifier,
+    fieldValue : String,
+    label : Int,
     focusManager : FocusManager,
     onValueChangeFunction : (String) -> Unit
 ) {
@@ -141,11 +185,9 @@ fun NumberField(
         value = fieldValue,
         onValueChange = onValueChangeFunction,
         visualTransformation = VisualTransformation.None,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = {
-            keyboardController?.hide()
-            focusManager.clearFocus()
-        }),
-        label = { Text (stringResource(id = label))}
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Next),
+        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }),
+        singleLine = true,
+        label = { Text (stringResource(id = label))},
     )
 }

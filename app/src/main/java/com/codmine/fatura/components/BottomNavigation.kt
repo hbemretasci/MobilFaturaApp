@@ -7,10 +7,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -79,11 +76,12 @@ fun BottomNavigationGraph(gibNo : String,
                           vkNo : String,
                           passText : String,
                           bottomNavController: NavHostController,
+                          snackbarHostState: SnackbarHostState,
                           paddingValues : PaddingValues) {
 
     NavHost(navController = bottomNavController, startDestination = BottomScreen.FaturaOlustur.route) {
         composable(BottomScreen.FaturaOlustur.route) {
-            FaturaOlusturScreen(gibNo, vkNo, passText, paddingValues)
+            FaturaOlusturScreen(gibNo, vkNo, passText, snackbarHostState, paddingValues)
         }
         composable(BottomScreen.DuzenlenenBelgeler.route) {
             //EvraklarScreen(gibNo, vkNo, passText, user, maliMusavir, paddingValues)

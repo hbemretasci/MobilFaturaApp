@@ -55,27 +55,8 @@
     <string name="exit_dialog_confirm_message">Evet</string>
     <string name="exit_dialog_cancel_message">Hayır</string>
 
-    <!-- Bildirimler -->
-    <string name="retry">Yeniden Dene!</string>
-    <string name="data_not_found_cari">Cari hareket bulunamadı.</string>
-    <string name="data_not_found_notification">Burada hiç bildirim yok.</string>
-    <string name="data_not_found_document">Burada hiç evrak yok.</string>
-    <string name="data_not_found_message">Sohbet henüz başlamamış.</string>
-    <string name="data_not_found_person">Burada hiç kimse yok.</string>
-    <string name="cont_doc">Ekli döküman mevcut.</string>
 
-    <!-- Sohbet -->
-    <string name="caption_post_time">Yayınlanma</string>
-    <string name="caption_read_time">Okunma</string>
 
-    <!-- Evraklar -->
-    <string name="cont_unread">Okunmamış İletiler</string>
-    <string name="cont_read">İletiler</string>
-    <string name="cont_send">Gönder</string>
-    <string name="message_box_ph">Mesaj</string>
-    <string name="jumpBottom">Son Mesaja Git</string>
 
-    <!-- Cari -->
-    <string name="caption_cari">Cari Hareket Listesi</string>
 
 </resources>
