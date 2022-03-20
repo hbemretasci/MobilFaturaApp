@@ -6,12 +6,8 @@ import android.content.Context
 import android.widget.DatePicker
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
-import com.codmine.fatura.model.MaliMusavir
-import com.codmine.fatura.model.UserAuthentication
 import com.codmine.fatura.repository.FaturaRepository
-import com.codmine.fatura.util.Constants.QUERY_TYPE_MUKELLEF_DATA
 import com.codmine.fatura.util.CustomDataStore
-import com.codmine.fatura.util.Resource
 import com.codmine.fatura.util.formatDate
 import com.codmine.fatura.util.formatTime
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,30 +20,37 @@ class FaturaViewModel @Inject constructor(
     private val repository: FaturaRepository
 ) : AndroidViewModel(application) {
 
+    //context açığa sebep olmamak için parametre ile geçirildi.
     //@SuppressLint("StaticFieldLeak")
     //private val context = getApplication<Application>().applicationContext
 
     //data store
     var customDataStore = CustomDataStore()
 
+    //1.Başlık
+    //1.1.Fatura Bilgileri
     var faturaDate = mutableStateOf("")
     var faturaTime = mutableStateOf("")
+    var faturaDovizKuru = mutableStateOf("0.0")
     val faturaParaBirimiList = listOf("Türk Lirası", "Canadian Dollar", "Euro", "Pound Sterling", "US Dollar", "Yen")
     val faturaTipiList = listOf("SATIŞ", "İADE", "TEVKİFAT", "İSTİSNA", "ÖZEL MATRAH", "İHRAÇ KAYITLI")
+
+    //1.2.Alıcı Bilgileri
     var faturaVknTckn = mutableStateOf("")
     var faturaAdi = mutableStateOf("")
     var faturaSoyadi = mutableStateOf("")
     var faturaUnvan = mutableStateOf("")
     var faturaVergiDairesi = mutableStateOf("")
     var faturaAdres = mutableStateOf("")
+
+    //1.3.İrsaliye Bilgisi
     var faturaIrsaliyeNum = mutableStateOf("")
     var faturaIrsaliyeDate = mutableStateOf("")
 
     //private val emptyUserAuthentication = UserAuthentication("","")
     //private val emptyMaliMusavir = MaliMusavir("","","","","","")
+    //var errorMessage = mutableStateOf("")
 
-    //general
-    var errorMessage = mutableStateOf("")
     var isLoading = mutableStateOf(false)
 
     //load User Data
@@ -92,12 +95,22 @@ class FaturaViewModel @Inject constructor(
         return formatTime(hour, minute, second)
     }
 
-    fun getCurrentDateAndTime() {
+    fun initializeFieldsValue() {
         faturaDate.value = getCurrentDate()
         faturaTime.value = getCurrentTime()
+        faturaDovizKuru.value = "0.0"
+        faturaVknTckn.value = ""
+        faturaAdi.value =""
+        faturaSoyadi.value =""
+        faturaUnvan.value =""
+        faturaVergiDairesi.value = ""
+        faturaAdres.value = ""
+        faturaIrsaliyeNum.value = ""
+        faturaIrsaliyeDate.value = ""
+
     }
 
-    fun selectDate(context : Context) {
+    fun selectDate(context : Context, dateType : String) {
         val currentDateTime = Calendar.getInstance()
         val year = currentDateTime.get(Calendar.YEAR)
         val month = currentDateTime.get(Calendar.MONTH)
@@ -106,7 +119,10 @@ class FaturaViewModel @Inject constructor(
         DatePickerDialog(
             context,
             {_: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-                faturaDate.value = formatDate(year, month, dayOfMonth)
+                when (dateType) {
+                    "FAT" -> faturaDate.value = formatDate(year, month, dayOfMonth)
+                    "IRS" -> faturaIrsaliyeDate.value = formatDate(year, month, dayOfMonth)
+                }
             }, year, month, day
         ).show()
     }

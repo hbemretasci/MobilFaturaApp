@@ -1,14 +1,10 @@
 package com.codmine.fatura.components
 
-import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.Divider
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,13 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.codmine.fatura.R
 
 @Composable
 fun SectionHeader(label: String) {
@@ -129,6 +125,7 @@ fun ListField(
 @Composable
 fun NumberFieldDone(
     modifier : Modifier,
+    enabled : Boolean,
     fieldValue : String,
     label : Int,
     onValueChangeFunction : (String) -> Unit,
@@ -136,6 +133,7 @@ fun NumberFieldDone(
 ) {
     OutlinedTextField(
         modifier = modifier.onFocusChanged { if (!it.isFocused) onDoneFunction() },
+        enabled = enabled,
         value = fieldValue,
         onValueChange = onValueChangeFunction,
         visualTransformation = VisualTransformation.None,
@@ -178,10 +176,13 @@ fun CopyField(
     fieldValue : String,
     label : Int,
     focusManager : FocusManager,
+    onFocusedFunction : () -> Unit,
     onValueChangeFunction : (String) -> Unit
 ) {
     OutlinedTextField(
-        modifier = modifier,
+        modifier = modifier.onFocusEvent {
+            if (it.isFocused) { onFocusedFunction() }
+        },
         value = fieldValue,
         onValueChange = onValueChangeFunction,
         visualTransformation = VisualTransformation.None,

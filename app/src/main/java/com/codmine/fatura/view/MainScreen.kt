@@ -21,6 +21,6 @@ fun MainScreen(gibNo : String, vkNo : String, passText : String) {
         bottomBar = { BottomNavigationScreen(bottomNavController) },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) {
-        BottomNavigationGraph(gibNo, vkNo, passText, bottomNavController, snackbarHostState, it)
+        BottomNavigationGraph(gibNo, vkNo, passText, bottomNavController, snackbarHostState)
     }
 }

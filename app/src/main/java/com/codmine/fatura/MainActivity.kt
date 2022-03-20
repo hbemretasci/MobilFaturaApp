@@ -17,7 +17,10 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             FaturaTheme {
-                ProvideWindowInsets {
+                ProvideWindowInsets(
+                    windowInsetsAnimationsEnabled = true,
+                    consumeWindowInsets = false,
+                ) {
                     MainNavigationGraph()
                 }
             }

@@ -76,12 +76,11 @@ fun BottomNavigationGraph(gibNo : String,
                           vkNo : String,
                           passText : String,
                           bottomNavController: NavHostController,
-                          snackbarHostState: SnackbarHostState,
-                          paddingValues : PaddingValues) {
+                          snackbarHostState: SnackbarHostState) {
 
     NavHost(navController = bottomNavController, startDestination = BottomScreen.FaturaOlustur.route) {
         composable(BottomScreen.FaturaOlustur.route) {
-            FaturaOlusturScreen(gibNo, vkNo, passText, snackbarHostState, paddingValues)
+            FaturaOlusturScreen(gibNo, vkNo, passText, snackbarHostState)
         }
         composable(BottomScreen.DuzenlenenBelgeler.route) {
             //EvraklarScreen(gibNo, vkNo, passText, user, maliMusavir, paddingValues)
