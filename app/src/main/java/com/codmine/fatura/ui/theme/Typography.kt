@@ -102,8 +102,10 @@ val FaturaTypography = Typography(
         fontFamily = KarlaFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.4.sp
+        //lineHeight = 16.sp,
+        lineHeight = 10.sp,
+        //letterSpacing = 0.4.sp
+        letterSpacing = 0.2.sp
     ),
     labelLarge = TextStyle(
         fontFamily = MontserratFontFamily,

@@ -31,8 +31,8 @@ class FaturaViewModel @Inject constructor(
     //1.1.Fatura Bilgileri
     var faturaDate = mutableStateOf("")
     var faturaTime = mutableStateOf("")
-    var faturaDovizKuru = mutableStateOf("0.0")
     val faturaParaBirimiList = listOf("Türk Lirası", "Canadian Dollar", "Euro", "Pound Sterling", "US Dollar", "Yen")
+    var faturaDovizKuru = mutableStateOf("0.0")
     val faturaTipiList = listOf("SATIŞ", "İADE", "TEVKİFAT", "İSTİSNA", "ÖZEL MATRAH", "İHRAÇ KAYITLI")
 
     //1.2.Alıcı Bilgileri
@@ -46,6 +46,17 @@ class FaturaViewModel @Inject constructor(
     //1.3.İrsaliye Bilgisi
     var faturaIrsaliyeNum = mutableStateOf("")
     var faturaIrsaliyeDate = mutableStateOf("")
+
+    //2.Kalemler
+    var kalemMalHizmet = mutableStateOf("")
+    var kalemMiktar = mutableStateOf("0.0")
+    val kalemBirim = listOf("Adet", "Paket", "Kutu", "kg", "lt", "ton")
+    var kalemBirimFiyat = mutableStateOf("0.0")
+    var kalemIskontoOrani = mutableStateOf("0.0")
+    var kalemIskontoTutari = mutableStateOf("0.0")
+    var kalemMalHizmetTutari = mutableStateOf("0.0")
+    val kalemKDVOrani = listOf("0", "1", "8", "18")
+    var kalemKDVTutari = mutableStateOf("0.0")
 
     //private val emptyUserAuthentication = UserAuthentication("","")
     //private val emptyMaliMusavir = MaliMusavir("","","","","","")

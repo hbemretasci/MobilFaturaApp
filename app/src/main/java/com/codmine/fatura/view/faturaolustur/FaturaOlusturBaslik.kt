@@ -96,14 +96,14 @@ fun IrsaliyeBilgisi(
                 .padding(horizontal = 12.dp),
             fieldValue = faturaIrsaliyeNum,
             label = R.string.label_irsaliye_numarasi,
-            focusManager = focusManager,
             onFocusedFunction = {
                 scope.launch {
                     delay(300)
                     bringIntoViewRequester.bringIntoView()
                 }
             },
-            onValueChangeFunction = { faturaIrsaliyeNum = it}
+            onValueChangeFunction = { faturaIrsaliyeNum = it},
+            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
         DateField(
             modifier = Modifier
@@ -206,9 +206,9 @@ fun AlıcıBilgileri(
                 .padding(horizontal = 12.dp),
             fieldValue = faturaUnvan,
             label = R.string.label_unvan,
-            focusManager = focusManager,
             onFocusedFunction = { },
-            onValueChangeFunction = { faturaUnvan = it }
+            onValueChangeFunction = { faturaUnvan = it },
+            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
         CopyField(
             modifier = Modifier
@@ -216,9 +216,9 @@ fun AlıcıBilgileri(
                 .padding(horizontal = 12.dp),
             fieldValue = faturaVergiDairesi,
             label = R.string.label_vergi_dairesi,
-            focusManager = focusManager,
             onFocusedFunction = { },
-            onValueChangeFunction = { faturaVergiDairesi = it }
+            onValueChangeFunction = { faturaVergiDairesi = it },
+            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
     }
     Row(
@@ -235,14 +235,14 @@ fun AlıcıBilgileri(
                 .padding(horizontal = 12.dp),
             fieldValue = faturaAdi,
             label = R.string.label_adi,
-            focusManager = focusManager,
             onFocusedFunction = {
                 scope.launch {
                     delay(300)
                     bringIntoViewRequesterNameRow.bringIntoView()
                 }
             },
-            onValueChangeFunction = { faturaAdi = it }
+            onValueChangeFunction = { faturaAdi = it },
+            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
         CopyField(
             modifier = Modifier
@@ -250,14 +250,14 @@ fun AlıcıBilgileri(
                 .padding(horizontal = 12.dp),
             fieldValue = faturaSoyadi,
             label = R.string.label_soyadi,
-            focusManager = focusManager,
             onFocusedFunction = {
                 scope.launch {
                     delay(300)
                     bringIntoViewRequesterNameRow.bringIntoView()
                 }
             },
-            onValueChangeFunction = { faturaSoyadi = it }
+            onValueChangeFunction = { faturaSoyadi = it },
+            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
     }
     Row(
@@ -273,14 +273,14 @@ fun AlıcıBilgileri(
                 .padding(horizontal = 12.dp),
             fieldValue = faturaAdres,
             label = R.string.label_adres,
-            focusManager = focusManager,
             onFocusedFunction = {
                 scope.launch {
                     delay(300)
                     bringIntoViewRequesterAdrRow.bringIntoView()
                 }
             },
-            onValueChangeFunction = { faturaAdres = it }
+            onValueChangeFunction = { faturaAdres = it },
+            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
     }
 }
@@ -369,7 +369,7 @@ fun FaturaBilgileri(
                 isDovizKuruEnabled = selectedParaBirimi != faturaParaBirimiList[0]
             }
         )
-        NumberFieldDone(
+        NumberField(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
@@ -378,7 +378,7 @@ fun FaturaBilgileri(
             label = R.string.label_doviz_kuru,
             onValueChangeFunction = {
                 if (it.length <= 8 && !it.contains(",")) faturaDovizKuru = it },
-            onDoneFunction = {
+            onNextFunction = {
                 keyboardController?.hide()
                 try {
                     faturaDovizKuru = faturaDovizKuru.toFloat().toString()

@@ -49,8 +49,13 @@
     <string name="cont_textfield_irsaliye_date">İrsaliye Tarihi</string>
 
     <!-- Fatura Olustur - Kalemler -->
-
     <string name="label_section4">Mal Hizmet Bilgileri</string>
+    <string name="label_mal_hizmet">Mal/Hizmet</string>
+    <string name="label_miktar">Miktar</string>
+    <string name="label_birim">Br</string>
+    <string name="label_birim_fiyat">Fiyat</string>
+    <string name="label_iskonto_orani">İsk. %</string>
+    <string name="label_iskonto_tutari">İsk. Tut.</string>
 
     <!-- Top Bar & Dialog -->
     <string name="cont_exit">Çıkış</string>
@@ -58,9 +63,6 @@
     <string name="exit_dialog_message">Çıkmak istediğinizden emin misiniz?</string>
     <string name="exit_dialog_confirm_message">Evet</string>
     <string name="exit_dialog_cancel_message">Hayır</string>
-
-
-
 
 
 </resources>
