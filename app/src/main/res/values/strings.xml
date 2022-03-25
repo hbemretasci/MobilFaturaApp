@@ -56,6 +56,8 @@
     <string name="label_birim_fiyat">Fiyat</string>
     <string name="label_iskonto_orani">İsk. %</string>
     <string name="label_iskonto_tutari">İsk. Tut.</string>
+    <string name="label_mal_hizmet_tutari">Tutar</string>
+
 
     <!-- Top Bar & Dialog -->
     <string name="cont_exit">Çıkış</string>

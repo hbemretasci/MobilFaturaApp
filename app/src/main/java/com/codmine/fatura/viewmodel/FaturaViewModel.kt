@@ -138,4 +138,14 @@ class FaturaViewModel @Inject constructor(
         ).show()
     }
 
+    fun update() {
+
+        println(faturaAdi.value)
+        println(faturaSoyadi.value)
+        println(faturaAdres.value)
+
+
+    }
+
+
 }

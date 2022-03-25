@@ -102,7 +102,7 @@ fun IrsaliyeBilgisi(
                     bringIntoViewRequester.bringIntoView()
                 }
             },
-            onValueChangeFunction = { faturaIrsaliyeNum = it},
+            onValueChangeFunction = { if (it.length <= 25) faturaIrsaliyeNum = it},
             onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
         DateField(
@@ -178,6 +178,10 @@ fun AlıcıBilgileri(
         OutlinedButton(
             onClick = {
                 scope.launch {
+                    faturaAdi="Emre"
+                    faturaSoyadi="Taşçı"
+                    faturaAdres="Silikon Vadisi"
+                    viewModel.updateValue()
                     snackbarHostState.showSnackbar(
                         message = "Mükellef bilgileri getirildi.",
                         duration = SnackbarDuration.Short)
@@ -207,7 +211,7 @@ fun AlıcıBilgileri(
             fieldValue = faturaUnvan,
             label = R.string.label_unvan,
             onFocusedFunction = { },
-            onValueChangeFunction = { faturaUnvan = it },
+            onValueChangeFunction = { if (it.length <= 35)  faturaUnvan = it },
             onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
         CopyField(
@@ -217,7 +221,7 @@ fun AlıcıBilgileri(
             fieldValue = faturaVergiDairesi,
             label = R.string.label_vergi_dairesi,
             onFocusedFunction = { },
-            onValueChangeFunction = { faturaVergiDairesi = it },
+            onValueChangeFunction = { if (it.length <= 25) faturaVergiDairesi = it },
             onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
     }
@@ -241,7 +245,7 @@ fun AlıcıBilgileri(
                     bringIntoViewRequesterNameRow.bringIntoView()
                 }
             },
-            onValueChangeFunction = { faturaAdi = it },
+            onValueChangeFunction = { if (it.length <= 25) faturaAdi = it },
             onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
         CopyField(
@@ -256,7 +260,7 @@ fun AlıcıBilgileri(
                     bringIntoViewRequesterNameRow.bringIntoView()
                 }
             },
-            onValueChangeFunction = { faturaSoyadi = it },
+            onValueChangeFunction = { if (it.length <= 25) faturaSoyadi = it },
             onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
     }
@@ -279,7 +283,7 @@ fun AlıcıBilgileri(
                     bringIntoViewRequesterAdrRow.bringIntoView()
                 }
             },
-            onValueChangeFunction = { faturaAdres = it },
+            onValueChangeFunction = { if (it.length <= 75) faturaAdres = it },
             onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
     }
@@ -345,6 +349,7 @@ fun FaturaBilgileri(
             onClickFunction = {
                 selectedFaturaTipi = it
                 expandedFaturaTipiList = false
+                focusManager.moveFocus(focusDirection = FocusDirection.Next)
             }
         )
     }
@@ -367,6 +372,14 @@ fun FaturaBilgileri(
                 selectedParaBirimi = it
                 expandedParaBirimiList = false
                 isDovizKuruEnabled = selectedParaBirimi != faturaParaBirimiList[0]
+                if (isDovizKuruEnabled) {
+                    scope.launch {
+                        delay(300)
+                        focusManager.moveFocus(focusDirection = FocusDirection.Next)
+                    }
+                } else {
+                    focusManager.moveFocus(focusDirection = FocusDirection.Down)
+                }
             }
         )
         NumberField(

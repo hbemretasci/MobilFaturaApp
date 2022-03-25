@@ -236,6 +236,7 @@ fun CopyFieldSmall(
 @Composable
 fun NumberFieldSmall(
     modifier : Modifier,
+    readOnly : Boolean,
     enabled : Boolean,
     fieldValue : String,
     label : Int,
@@ -244,6 +245,7 @@ fun NumberFieldSmall(
 ) {
     OutlinedTextField(
         modifier = modifier.onFocusChanged { if (!it.isFocused) onNextFunction() },
+        readOnly = readOnly,
         enabled = enabled,
         value = fieldValue,
         textStyle = MaterialTheme.typography.bodySmall,
