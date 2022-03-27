@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.codmine.fatura.R
 import com.codmine.fatura.components.*
+import com.codmine.fatura.util.StringToFloat
 import com.codmine.fatura.viewmodel.FaturaViewModel
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import kotlinx.coroutines.launch
@@ -77,7 +78,7 @@ fun KalemBilgileri(
     var kalemKDVTutari by remember { viewModel.kalemKDVTutari }
 
     LaunchedEffect(key1 = true) {
-        viewModel.initializeFieldsValue()
+        viewModel.initializeKalemlerFields()
     }
 
     SectionHeader(label = stringResource(id = R.string.label_section4))
@@ -110,16 +111,8 @@ fun KalemBilgileri(
                 if (it.length <= 5 && !it.contains(",")) kalemMiktar = it },
             onNextFunction = {
                 keyboardController?.hide()
-                try {
-                    kalemMiktar = kalemMiktar.toFloat().toString()
-                } catch (e: NumberFormatException) {
-                    kalemMiktar = "0.0"
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = "Miktar bilgisi 0.0 olarak alındı.",
-                            duration = SnackbarDuration.Short)
-                    }
-                }
+                kalemMiktar = StringToFloat(kalemMiktar).toString()
+                viewModel.updateFaturaKalemValues()
                 focusManager.moveFocus(focusDirection = FocusDirection.Next)
             }
         )
@@ -139,9 +132,6 @@ fun KalemBilgileri(
                 focusManager.moveFocus(focusDirection = FocusDirection.Next)
             }
         )
-
-
-
     }
 
     Spacer(modifier = Modifier.padding(vertical = 6.dp))
@@ -163,16 +153,8 @@ fun KalemBilgileri(
                 if (it.length <= 5 && !it.contains(",")) kalemBirimFiyat = it },
             onNextFunction = {
                 keyboardController?.hide()
-                try {
-                    kalemBirimFiyat = kalemBirimFiyat.toFloat().toString()
-                } catch (e: NumberFormatException) {
-                    kalemBirimFiyat = "0.0"
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = "Fiyat bilgisi 0.0 olarak alındı.",
-                            duration = SnackbarDuration.Short)
-                    }
-                }
+                kalemBirimFiyat = StringToFloat(kalemBirimFiyat).toString()
+                viewModel.updateFaturaKalemValues()
                 focusManager.moveFocus(focusDirection = FocusDirection.Next)
             }
         )
@@ -189,16 +171,9 @@ fun KalemBilgileri(
                 if (it.length <= 4 && !it.contains(",")) kalemIskontoOrani = it },
             onNextFunction = {
                 keyboardController?.hide()
-                try {
-                    kalemIskontoOrani = kalemIskontoOrani.toFloat().toString()
-                } catch (e: NumberFormatException) {
-                    kalemIskontoOrani = "0.0"
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = "İskonto oranı 0.0 olarak alındı.",
-                            duration = SnackbarDuration.Short)
-                    }
-                }
+                kalemIskontoOrani = StringToFloat(kalemIskontoOrani).toString()
+                viewModel.updateIskontoOraniValue()
+                viewModel.updateFaturaKalemValues()
                 focusManager.moveFocus(focusDirection = FocusDirection.Next)
             }
         )
@@ -215,16 +190,9 @@ fun KalemBilgileri(
                 if (it.length <= 6 && !it.contains(",")) kalemIskontoTutari = it },
             onNextFunction = {
                 keyboardController?.hide()
-                try {
-                    kalemIskontoTutari = kalemIskontoTutari.toFloat().toString()
-                } catch (e: NumberFormatException) {
-                    kalemIskontoTutari = "0.0"
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = "İskonto tutarı 0.0 olarak alındı.",
-                            duration = SnackbarDuration.Short)
-                    }
-                }
+                kalemIskontoTutari = StringToFloat(kalemIskontoTutari).toString()
+                viewModel.updateIskontoTutariValue()
+                viewModel.updateFaturaKalemValues()
                 focusManager.moveFocus(focusDirection = FocusDirection.Next)
             }
         )
@@ -238,29 +206,8 @@ fun KalemBilgileri(
             enabled = true,
             label = R.string.label_mal_hizmet_tutari,
             onValueChangeFunction = { },
-            onNextFunction = {
-                keyboardController?.hide()
-                try {
-                    kalemIskontoTutari = kalemIskontoTutari.toFloat().toString()
-                } catch (e: NumberFormatException) {
-                    kalemIskontoTutari = "0.0"
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = "İskonto tutarı 0.0 olarak alındı.",
-                            duration = SnackbarDuration.Short)
-                    }
-                }
-                focusManager.moveFocus(focusDirection = FocusDirection.Next)
-            }
+            onNextFunction = { }
         )
-
     }
-
-
-}
-
-@Composable
-fun Kalem() {
-
 
 }

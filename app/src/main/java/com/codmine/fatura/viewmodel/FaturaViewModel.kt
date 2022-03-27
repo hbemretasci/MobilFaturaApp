@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import com.codmine.fatura.repository.FaturaRepository
 import com.codmine.fatura.util.CustomDataStore
+import com.codmine.fatura.util.StringToFloat
 import com.codmine.fatura.util.formatDate
 import com.codmine.fatura.util.formatTime
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -106,7 +107,7 @@ class FaturaViewModel @Inject constructor(
         return formatTime(hour, minute, second)
     }
 
-    fun initializeFieldsValue() {
+    fun initializeBaslikFields() {
         faturaDate.value = getCurrentDate()
         faturaTime.value = getCurrentTime()
         faturaDovizKuru.value = "0.0"
@@ -118,6 +119,9 @@ class FaturaViewModel @Inject constructor(
         faturaAdres.value = ""
         faturaIrsaliyeNum.value = ""
         faturaIrsaliyeDate.value = ""
+    }
+
+    fun initializeKalemlerFields() {
 
     }
 
@@ -138,14 +142,35 @@ class FaturaViewModel @Inject constructor(
         ).show()
     }
 
-    fun update() {
-
-        println(faturaAdi.value)
-        println(faturaSoyadi.value)
-        println(faturaAdres.value)
-
-
+    fun updateFaturaKalemValues() {
+        val miktar = StringToFloat(kalemMiktar.value)
+        val fiyat = StringToFloat(kalemBirimFiyat.value)
+        val iskontoTutari = StringToFloat(kalemIskontoTutari.value)
+        var tutar = (miktar * fiyat) - iskontoTutari
+        kalemMalHizmetTutari.value = tutar.toString()
     }
 
+    fun updateIskontoOraniValue() {
+        val miktar = StringToFloat(kalemMiktar.value)
+        val fiyat = StringToFloat(kalemBirimFiyat.value)
+        val iskontoOrani = StringToFloat(kalemIskontoOrani.value)
+
+        if (iskontoOrani > 0F && iskontoOrani < 100F) {
+            val iskontoTutari = miktar * fiyat * iskontoOrani / 100
+            kalemIskontoTutari.value = iskontoTutari.toString()
+        }
+    }
+
+    fun updateIskontoTutariValue() {
+        val miktar = StringToFloat(kalemMiktar.value)
+        val fiyat = StringToFloat(kalemBirimFiyat.value)
+        var iskontoOrani = StringToFloat(kalemIskontoOrani.value)
+        val iskontoTutari = StringToFloat(kalemIskontoTutari.value)
+
+        if (miktar * fiyat * iskontoOrani / 100 != iskontoTutari) {
+            iskontoOrani = 0F
+            kalemIskontoOrani.value = iskontoOrani.toString()
+        }
+    }
 
 }

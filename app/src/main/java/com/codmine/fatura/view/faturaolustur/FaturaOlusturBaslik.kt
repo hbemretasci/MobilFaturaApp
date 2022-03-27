@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.codmine.fatura.R
 import com.codmine.fatura.components.*
+import com.codmine.fatura.util.StringToFloat
 import com.codmine.fatura.viewmodel.FaturaViewModel
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
@@ -178,10 +179,6 @@ fun AlıcıBilgileri(
         OutlinedButton(
             onClick = {
                 scope.launch {
-                    faturaAdi="Emre"
-                    faturaSoyadi="Taşçı"
-                    faturaAdres="Silikon Vadisi"
-                    viewModel.updateValue()
                     snackbarHostState.showSnackbar(
                         message = "Mükellef bilgileri getirildi.",
                         duration = SnackbarDuration.Short)
@@ -315,7 +312,7 @@ fun FaturaBilgileri(
     var faturaDovizKuru by remember { viewModel.faturaDovizKuru }
 
     LaunchedEffect(key1 = true) {
-        viewModel.initializeFieldsValue()
+        viewModel.initializeBaslikFields()
     }
 
     SectionHeader(label = stringResource(id = R.string.label_section1))
@@ -378,6 +375,7 @@ fun FaturaBilgileri(
                         focusManager.moveFocus(focusDirection = FocusDirection.Next)
                     }
                 } else {
+                    faturaDovizKuru ="0.0"
                     focusManager.moveFocus(focusDirection = FocusDirection.Down)
                 }
             }
@@ -393,6 +391,9 @@ fun FaturaBilgileri(
                 if (it.length <= 8 && !it.contains(",")) faturaDovizKuru = it },
             onNextFunction = {
                 keyboardController?.hide()
+                faturaDovizKuru = StringToFloat(faturaDovizKuru).toString()
+
+                /*
                 try {
                     faturaDovizKuru = faturaDovizKuru.toFloat().toString()
                 } catch (e: NumberFormatException) {
@@ -403,6 +404,8 @@ fun FaturaBilgileri(
                             duration = SnackbarDuration.Short)
                     }
                 }
+                 */
+
                 focusManager.moveFocus(focusDirection = FocusDirection.Next)
             }
         )

@@ -12,3 +12,12 @@ fun formatTime (hour : Int, minute : Int, second : Int) : String {
     val secondStr = if(second .toString().length == 1) "0${second}" else second.toString()
     return "$hourStr:$minuteStr:$secondStr"
 }
+
+fun StringToFloat(inputString : String) : Float {
+    val output = try {
+        inputString.toFloat()
+    } catch (e: NumberFormatException) {
+        0F
+    }
+    return output
+}
