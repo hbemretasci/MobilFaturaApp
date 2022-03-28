@@ -8,6 +8,7 @@ import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Error
@@ -25,6 +26,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -91,19 +94,25 @@ fun IrsaliyeBilgisi(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CopyField(
+        CopyFieldState(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
             fieldValue = faturaIrsaliyeNum,
             label = R.string.label_irsaliye_numarasi,
             onFocusedFunction = {
+                val text = faturaIrsaliyeNum.text
+                faturaIrsaliyeNum = faturaIrsaliyeNum.copy(
+                    selection = TextRange(0, text.length)
+                )
+            },
+            onFocusFunction = {
                 scope.launch {
                     delay(300)
                     bringIntoViewRequester.bringIntoView()
                 }
             },
-            onValueChangeFunction = { if (it.length <= 25) faturaIrsaliyeNum = it},
+            onValueChangeFunction = { if (it.text.length <= 25) faturaIrsaliyeNum = it},
             onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
         )
         DateField(
@@ -153,7 +162,7 @@ fun AlıcıBilgileri(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        NumberFieldDoneWithError(
+        NumberFieldStateWithError(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
@@ -163,18 +172,20 @@ fun AlıcıBilgileri(
             errorIconDesc = R.string.cont_vkn_tckn_error,
             label = R.string.label_vkn_tckn,
             onValueChangeFunction = {
-                if ((it.length <= 11) && (!it.contains(",")) && (!it.contains("."))) faturaVknTckn = it
-                isErrorVknTckn = (it.length < 10)
+                if ((it.text.length <= 11) && (!it.text.contains(",")) && (!it.text.contains("."))) faturaVknTckn = it
+                isErrorVknTckn = (it.text.length < 10)
             },
-            onDoneFunction = {
+            onNextFunction = {
                 keyboardController?.hide()
-                focusManager.clearFocus()
-                scope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = "Mükellef bilgileri getirildi.",
-                        duration = SnackbarDuration.Short)
-                }
-            }
+                focusManager.moveFocus(focusDirection = FocusDirection.Next)
+            },
+            onFocusedFunction = {
+                val text = faturaVknTckn.text
+                faturaVknTckn = faturaVknTckn.copy(
+                    selection = TextRange(0, text.length)
+                )
+            },
+            onFocusFunction = { }
         )
         OutlinedButton(
             onClick = {
@@ -201,25 +212,37 @@ fun AlıcıBilgileri(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CopyField(
+        CopyFieldState(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
             fieldValue = faturaUnvan,
             label = R.string.label_unvan,
-            onFocusedFunction = { },
-            onValueChangeFunction = { if (it.length <= 35)  faturaUnvan = it },
-            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
+            onFocusedFunction = {
+                val text = faturaUnvan.text
+                faturaUnvan = faturaUnvan.copy(
+                    selection = TextRange(0, text.length)
+                )
+            },
+            onValueChangeFunction = { if (it.text.length <= 35)  faturaUnvan = it },
+            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) },
+            onFocusFunction = { }
         )
-        CopyField(
+        CopyFieldState(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
             fieldValue = faturaVergiDairesi,
             label = R.string.label_vergi_dairesi,
-            onFocusedFunction = { },
-            onValueChangeFunction = { if (it.length <= 25) faturaVergiDairesi = it },
-            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
+            onFocusedFunction = {
+                val text = faturaVergiDairesi.text
+                faturaVergiDairesi = faturaVergiDairesi.copy(
+                    selection = TextRange(0, text.length)
+                )
+            },
+            onValueChangeFunction = { if (it.text.length <= 25) faturaVergiDairesi = it },
+            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) },
+            onFocusFunction = { }
         )
     }
     Row(
@@ -230,35 +253,47 @@ fun AlıcıBilgileri(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CopyField(
+        CopyFieldState(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
             fieldValue = faturaAdi,
             label = R.string.label_adi,
             onFocusedFunction = {
+                val text = faturaAdi.text
+                faturaAdi = faturaAdi.copy(
+                    selection = TextRange(0, text.length)
+                )
+            },
+            onValueChangeFunction = { if (it.text.length <= 25) faturaAdi = it },
+            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) },
+            onFocusFunction = {
                 scope.launch {
                     delay(300)
                     bringIntoViewRequesterNameRow.bringIntoView()
                 }
-            },
-            onValueChangeFunction = { if (it.length <= 25) faturaAdi = it },
-            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
+            }
         )
-        CopyField(
+        CopyFieldState(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
             fieldValue = faturaSoyadi,
             label = R.string.label_soyadi,
             onFocusedFunction = {
+                val text = faturaSoyadi.text
+                faturaSoyadi = faturaSoyadi.copy(
+                    selection = TextRange(0, text.length)
+                )
+            },
+            onValueChangeFunction = { if (it.text.length <= 25) faturaSoyadi = it },
+            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) },
+            onFocusFunction = {
                 scope.launch {
                     delay(300)
                     bringIntoViewRequesterNameRow.bringIntoView()
                 }
-            },
-            onValueChangeFunction = { if (it.length <= 25) faturaSoyadi = it },
-            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
+            }
         )
     }
     Row(
@@ -268,20 +303,26 @@ fun AlıcıBilgileri(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CopyField(
+        CopyFieldState(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
             fieldValue = faturaAdres,
             label = R.string.label_adres,
             onFocusedFunction = {
+                val text = faturaAdres.text
+                faturaAdres = faturaAdres.copy(
+                    selection = TextRange(0, text.length)
+                )
+            },
+            onValueChangeFunction = { if (it.text.length <= 75) faturaAdres = it },
+            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) },
+            onFocusFunction = {
                 scope.launch {
                     delay(300)
                     bringIntoViewRequesterAdrRow.bringIntoView()
                 }
-            },
-            onValueChangeFunction = { if (it.length <= 75) faturaAdres = it },
-            onNextFunction = { focusManager.moveFocus(focusDirection = FocusDirection.Next) }
+            }
         )
     }
 }
@@ -309,13 +350,16 @@ fun FaturaBilgileri(
     var selectedParaBirimi by remember { mutableStateOf(faturaParaBirimiList[0]) }
 
     var isDovizKuruEnabled by remember { mutableStateOf(false) }
+
     var faturaDovizKuru by remember { viewModel.faturaDovizKuru }
+    //var faturaDovizKuru by remember { mutableStateOf(TextFieldValue("0.0")) }
 
     LaunchedEffect(key1 = true) {
         viewModel.initializeBaslikFields()
     }
 
     SectionHeader(label = stringResource(id = R.string.label_section1))
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -375,12 +419,21 @@ fun FaturaBilgileri(
                         focusManager.moveFocus(focusDirection = FocusDirection.Next)
                     }
                 } else {
-                    faturaDovizKuru ="0.0"
+                    faturaDovizKuru = TextFieldValue("0.0")
                     focusManager.moveFocus(focusDirection = FocusDirection.Down)
                 }
             }
         )
-        NumberField(
+
+        /*
+        scope.launch {
+            snackbarHostState.showSnackbar(
+                message = "Kur bilgisi 0.0 olarak alındı.",
+                duration = SnackbarDuration.Short)
+        }
+         */
+
+        NumberFieldState(
             modifier = Modifier
                 .weight(.5f)
                 .padding(horizontal = 12.dp),
@@ -388,26 +441,19 @@ fun FaturaBilgileri(
             enabled = isDovizKuruEnabled,
             label = R.string.label_doviz_kuru,
             onValueChangeFunction = {
-                if (it.length <= 8 && !it.contains(",")) faturaDovizKuru = it },
+                if (it.text.length <= 8 && !it.text.contains(",")) faturaDovizKuru = it },
             onNextFunction = {
                 keyboardController?.hide()
-                faturaDovizKuru = StringToFloat(faturaDovizKuru).toString()
-
-                /*
-                try {
-                    faturaDovizKuru = faturaDovizKuru.toFloat().toString()
-                } catch (e: NumberFormatException) {
-                    faturaDovizKuru = "0.0"
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = "Kur bilgisi 0.0 olarak alındı.",
-                            duration = SnackbarDuration.Short)
-                    }
-                }
-                 */
-
+                faturaDovizKuru = TextFieldValue(StringToFloat(faturaDovizKuru.text).toString())
                 focusManager.moveFocus(focusDirection = FocusDirection.Next)
-            }
+            },
+            onFocusedFunction = {
+                val text = faturaDovizKuru.text
+                faturaDovizKuru = faturaDovizKuru.copy(
+                    selection = TextRange(0, text.length)
+                )
+            },
+            onFocusFunction = { }
         )
     }
 }

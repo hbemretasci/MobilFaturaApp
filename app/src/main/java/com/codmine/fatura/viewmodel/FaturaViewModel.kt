@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.widget.DatePicker
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import com.codmine.fatura.repository.FaturaRepository
 import com.codmine.fatura.util.CustomDataStore
@@ -33,19 +34,19 @@ class FaturaViewModel @Inject constructor(
     var faturaDate = mutableStateOf("")
     var faturaTime = mutableStateOf("")
     val faturaParaBirimiList = listOf("Türk Lirası", "Canadian Dollar", "Euro", "Pound Sterling", "US Dollar", "Yen")
-    var faturaDovizKuru = mutableStateOf("0.0")
+    var faturaDovizKuru = mutableStateOf(TextFieldValue("0.0"))
     val faturaTipiList = listOf("SATIŞ", "İADE", "TEVKİFAT", "İSTİSNA", "ÖZEL MATRAH", "İHRAÇ KAYITLI")
 
     //1.2.Alıcı Bilgileri
-    var faturaVknTckn = mutableStateOf("")
-    var faturaAdi = mutableStateOf("")
-    var faturaSoyadi = mutableStateOf("")
-    var faturaUnvan = mutableStateOf("")
-    var faturaVergiDairesi = mutableStateOf("")
-    var faturaAdres = mutableStateOf("")
+    var faturaVknTckn = mutableStateOf(TextFieldValue(""))
+    var faturaAdi = mutableStateOf(TextFieldValue(""))
+    var faturaSoyadi = mutableStateOf(TextFieldValue(""))
+    var faturaUnvan = mutableStateOf(TextFieldValue(""))
+    var faturaVergiDairesi = mutableStateOf(TextFieldValue(""))
+    var faturaAdres = mutableStateOf(TextFieldValue(""))
 
     //1.3.İrsaliye Bilgisi
-    var faturaIrsaliyeNum = mutableStateOf("")
+    var faturaIrsaliyeNum = mutableStateOf(TextFieldValue(""))
     var faturaIrsaliyeDate = mutableStateOf("")
 
     //2.Kalemler
@@ -110,14 +111,14 @@ class FaturaViewModel @Inject constructor(
     fun initializeBaslikFields() {
         faturaDate.value = getCurrentDate()
         faturaTime.value = getCurrentTime()
-        faturaDovizKuru.value = "0.0"
-        faturaVknTckn.value = ""
-        faturaAdi.value =""
-        faturaSoyadi.value =""
-        faturaUnvan.value =""
-        faturaVergiDairesi.value = ""
-        faturaAdres.value = ""
-        faturaIrsaliyeNum.value = ""
+        faturaDovizKuru.value = TextFieldValue("0.0")
+        faturaVknTckn.value = TextFieldValue("")
+        faturaAdi.value = TextFieldValue("")
+        faturaSoyadi.value = TextFieldValue("")
+        faturaUnvan.value = TextFieldValue("")
+        faturaVergiDairesi.value = TextFieldValue("")
+        faturaAdres.value = TextFieldValue("")
+        faturaIrsaliyeNum.value = TextFieldValue("")
         faturaIrsaliyeDate.value = ""
     }
 

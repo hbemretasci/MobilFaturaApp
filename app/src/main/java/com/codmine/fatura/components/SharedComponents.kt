@@ -10,21 +10,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -133,16 +130,24 @@ fun ListField(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun NumberField(
+fun NumberFieldState(
     modifier : Modifier,
     enabled : Boolean,
-    fieldValue : String,
+    fieldValue : TextFieldValue,
     label : Int,
-    onValueChangeFunction : (String) -> Unit,
-    onNextFunction : () -> Unit
+    onValueChangeFunction : (TextFieldValue) -> Unit,
+    onNextFunction : () -> Unit,
+    onFocusedFunction : () -> Unit,
+    onFocusFunction : () -> Unit
 ) {
     OutlinedTextField(
-        modifier = modifier.onFocusChanged { if (!it.isFocused) onNextFunction() },
+        modifier = modifier
+            .onFocusChanged {
+                if (it.isFocused) onFocusedFunction() else onNextFunction()
+            }
+            .onFocusEvent {
+                if (it.isFocused) onFocusFunction()
+            },
         enabled = enabled,
         value = fieldValue,
         onValueChange = onValueChangeFunction,
@@ -154,18 +159,26 @@ fun NumberField(
 }
 
 @Composable
-fun NumberFieldDoneWithError(
+fun NumberFieldStateWithError(
     modifier : Modifier,
-    fieldValue : String,
+    fieldValue : TextFieldValue,
     errorValue : Boolean,
     errorIcon : ImageVector,
     errorIconDesc : Int,
     label : Int,
-    onValueChangeFunction : (String) -> Unit,
-    onDoneFunction : () -> Unit
+    onValueChangeFunction : (TextFieldValue) -> Unit,
+    onNextFunction : () -> Unit,
+    onFocusedFunction : () -> Unit,
+    onFocusFunction : () -> Unit
 ) {
     OutlinedTextField(
-        modifier = modifier,
+        modifier = modifier
+            .onFocusChanged {
+                if (it.isFocused) onFocusedFunction() else onNextFunction()
+            }
+            .onFocusEvent {
+                if (it.isFocused) onFocusFunction()
+            },
         value = fieldValue,
         onValueChange = onValueChangeFunction,
         trailingIcon = {
@@ -174,32 +187,37 @@ fun NumberFieldDoneWithError(
                 tint = androidx.compose.material3.MaterialTheme.colorScheme.error) },
         isError = errorValue,
         visualTransformation = VisualTransformation.None,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = { onDoneFunction() }),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+        keyboardActions = KeyboardActions(onNext = { onNextFunction() }),
         label = { Text (stringResource(id = label)) }
     )
 }
 
 @Composable
-fun CopyField(
+fun CopyFieldState(
     modifier : Modifier,
-    fieldValue : String,
+    fieldValue : TextFieldValue,
     label : Int,
+    onValueChangeFunction : (TextFieldValue) -> Unit,
+    onNextFunction : () -> Unit,
     onFocusedFunction : () -> Unit,
-    onValueChangeFunction : (String) -> Unit,
-    onNextFunction : () -> Unit
+    onFocusFunction : () -> Unit
 ) {
     OutlinedTextField(
-        modifier = modifier.onFocusEvent {
-            if (it.isFocused) { onFocusedFunction() }
-        },
+        modifier = modifier
+            .onFocusChanged {
+                if (it.isFocused) onFocusedFunction() else onNextFunction()
+            }
+            .onFocusEvent {
+                if (it.isFocused) onFocusFunction()
+            },
         value = fieldValue,
         onValueChange = onValueChangeFunction,
         visualTransformation = VisualTransformation.None,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(onNext = { onNextFunction() }),
         singleLine = true,
-        label = { Text (stringResource(id = label))},
+        label = { Text (stringResource(id = label)) }
     )
 }
 
