@@ -4,7 +4,10 @@ import android.app.Application
 import android.app.DatePickerDialog
 import android.content.Context
 import android.widget.DatePicker
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import com.codmine.fatura.repository.FaturaRepository
@@ -34,8 +37,10 @@ class FaturaViewModel @Inject constructor(
     var faturaDate = mutableStateOf("")
     var faturaTime = mutableStateOf("")
     val faturaParaBirimiList = listOf("Türk Lirası", "Canadian Dollar", "Euro", "Pound Sterling", "US Dollar", "Yen")
+    var selectedParaBirimi = mutableStateOf(faturaParaBirimiList[0])
     var faturaDovizKuru = mutableStateOf(TextFieldValue("0.0"))
-    val faturaTipiList = listOf("SATIŞ", "İADE", "TEVKİFAT", "İSTİSNA", "ÖZEL MATRAH", "İHRAÇ KAYITLI")
+    val faturaTipiList = listOf("Satış", "İade", "Tevkifat", "İstisna", "Özel Matrah", "İhraç Kayıtlı")
+    var selectedFaturaTipi = mutableStateOf(faturaTipiList[0])
 
     //1.2.Alıcı Bilgileri
     var faturaVknTckn = mutableStateOf(TextFieldValue(""))
@@ -50,15 +55,16 @@ class FaturaViewModel @Inject constructor(
     var faturaIrsaliyeDate = mutableStateOf("")
 
     //2.Kalemler
-    var kalemMalHizmet = mutableStateOf("")
-    var kalemMiktar = mutableStateOf("0.0")
-    val kalemBirim = listOf("Adet", "Paket", "Kutu", "kg", "lt", "ton")
-    var kalemBirimFiyat = mutableStateOf("0.0")
-    var kalemIskontoOrani = mutableStateOf("0.0")
-    var kalemIskontoTutari = mutableStateOf("0.0")
-    var kalemMalHizmetTutari = mutableStateOf("0.0")
-    val kalemKDVOrani = listOf("0", "1", "8", "18")
-    var kalemKDVTutari = mutableStateOf("0.0")
+    var kalemMalHizmet = mutableStateOf(TextFieldValue(""))
+    var kalemMiktar = mutableStateOf(TextFieldValue("0.0"))
+    val kalemBirimList = listOf("Adet", "Paket", "Kutu", "kg", "lt", "ton")
+    var kalemBirimFiyat = mutableStateOf(TextFieldValue("0.0"))
+    var kalemIskontoOrani = mutableStateOf(TextFieldValue("0.0"))
+    var kalemIskontoTutari = mutableStateOf(TextFieldValue("0.0"))
+    var kalemMalHizmetTutari = mutableStateOf(TextFieldValue("0.0"))
+    val kalemKDVOraniList = listOf("0", "1", "8", "18")
+    var selectedKDV = mutableStateOf(kalemKDVOraniList[0])
+    var kalemKDVTutari = mutableStateOf(TextFieldValue("0.0"))
 
     //private val emptyUserAuthentication = UserAuthentication("","")
     //private val emptyMaliMusavir = MaliMusavir("","","","","","")
@@ -144,33 +150,44 @@ class FaturaViewModel @Inject constructor(
     }
 
     fun updateFaturaKalemValues() {
-        val miktar = StringToFloat(kalemMiktar.value)
-        val fiyat = StringToFloat(kalemBirimFiyat.value)
-        val iskontoTutari = StringToFloat(kalemIskontoTutari.value)
+        val miktar = StringToFloat(kalemMiktar.value.text)
+        val fiyat = StringToFloat(kalemBirimFiyat.value.text)
+        val iskontoOrani = StringToFloat(kalemIskontoOrani.value.text)
+        val kdvOrani = StringToFloat(kalemIskontoOrani.value.text)
+
+
+        var iskontoTutari = StringToFloat(kalemIskontoTutari.value.text)
+        if (iskontoOrani > 0F) {
+            iskontoTutari = miktar * fiyat * iskontoOrani / 100
+            kalemIskontoTutari.value = TextFieldValue(iskontoTutari.toString())
+        }
         var tutar = (miktar * fiyat) - iskontoTutari
-        kalemMalHizmetTutari.value = tutar.toString()
+        kalemMalHizmetTutari.value = TextFieldValue(tutar.toString())
+
+        var kdvTutari = tutar * selectedKDV.value.toFloat() / 100
+        kalemKDVTutari.value = TextFieldValue(kdvTutari.toString())
     }
 
     fun updateIskontoOraniValue() {
-        val miktar = StringToFloat(kalemMiktar.value)
-        val fiyat = StringToFloat(kalemBirimFiyat.value)
-        val iskontoOrani = StringToFloat(kalemIskontoOrani.value)
+        val miktar = StringToFloat(kalemMiktar.value.text)
+        val fiyat = StringToFloat(kalemBirimFiyat.value.text)
+        val iskontoOrani = StringToFloat(kalemIskontoOrani.value.text)
 
-        if (iskontoOrani > 0F && iskontoOrani < 100F) {
+        if (iskontoOrani in 0F..100F) {
             val iskontoTutari = miktar * fiyat * iskontoOrani / 100
-            kalemIskontoTutari.value = iskontoTutari.toString()
+            kalemIskontoTutari.value = TextFieldValue(iskontoTutari.toString())
         }
     }
 
     fun updateIskontoTutariValue() {
-        val miktar = StringToFloat(kalemMiktar.value)
-        val fiyat = StringToFloat(kalemBirimFiyat.value)
-        var iskontoOrani = StringToFloat(kalemIskontoOrani.value)
-        val iskontoTutari = StringToFloat(kalemIskontoTutari.value)
+        val miktar = StringToFloat(kalemMiktar.value.text)
+        val fiyat = StringToFloat(kalemBirimFiyat.value.text)
+        var iskontoOrani = StringToFloat(kalemIskontoOrani.value.text)
+        val iskontoTutari = StringToFloat(kalemIskontoTutari.value.text)
 
         if (miktar * fiyat * iskontoOrani / 100 != iskontoTutari) {
             iskontoOrani = 0F
-            kalemIskontoOrani.value = iskontoOrani.toString()
+            kalemIskontoOrani.value = TextFieldValue(iskontoOrani.toString())
         }
     }
 

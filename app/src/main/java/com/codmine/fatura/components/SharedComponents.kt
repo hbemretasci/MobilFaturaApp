@@ -98,15 +98,9 @@ fun ListField(
             value = fieldValue,
             readOnly = true,
             onValueChange = { },
-            label = {
-                Text(
-                    text = stringResource(id = label),
-                )
-            },
+            label = { Text(text = stringResource(id = label)) },
             trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expandedStatus
-                )
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedStatus)
             },
             colors = TextFieldDefaults.outlinedTextFieldColors()
         )
@@ -116,11 +110,7 @@ fun ListField(
         ) {
             list.forEach {
                 DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = it,
-                        )
-                   },
+                    text = { Text(text = it) },
                     onClick = { onClickFunction(it) }
                 )
             }
@@ -130,7 +120,7 @@ fun ListField(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun NumberFieldState(
+fun NumberField(
     modifier : Modifier,
     enabled : Boolean,
     fieldValue : TextFieldValue,
@@ -159,7 +149,7 @@ fun NumberFieldState(
 }
 
 @Composable
-fun NumberFieldStateWithError(
+fun NumberFieldWithError(
     modifier : Modifier,
     fieldValue : TextFieldValue,
     errorValue : Boolean,
@@ -194,7 +184,7 @@ fun NumberFieldStateWithError(
 }
 
 @Composable
-fun CopyFieldState(
+fun CopyField(
     modifier : Modifier,
     fieldValue : TextFieldValue,
     label : Int,
@@ -224,16 +214,21 @@ fun CopyFieldState(
 @Composable
 fun CopyFieldSmall(
     modifier : Modifier,
-    fieldValue : String,
+    fieldValue : TextFieldValue,
     label : Int,
+    onValueChangeFunction : (TextFieldValue) -> Unit,
+    onNextFunction : () -> Unit,
     onFocusedFunction : () -> Unit,
-    onValueChangeFunction : (String) -> Unit,
-    onNextFunction : () -> Unit
+    onFocusFunction : () -> Unit
 ) {
     OutlinedTextField(
-        modifier = modifier.onFocusEvent {
-            if (it.isFocused) { onFocusedFunction() }
-        },
+        modifier = modifier
+            .onFocusChanged {
+                if (it.isFocused) onFocusedFunction() else onNextFunction()
+            }
+            .onFocusEvent {
+                if (it.isFocused) onFocusFunction()
+            },
         value = fieldValue,
         textStyle = MaterialTheme.typography.bodySmall,
         onValueChange = onValueChangeFunction,
@@ -256,13 +251,21 @@ fun NumberFieldSmall(
     modifier : Modifier,
     readOnly : Boolean,
     enabled : Boolean,
-    fieldValue : String,
+    fieldValue : TextFieldValue,
     label : Int,
-    onValueChangeFunction : (String) -> Unit,
-    onNextFunction : () -> Unit
+    onValueChangeFunction : (TextFieldValue) -> Unit,
+    onNextFunction : () -> Unit,
+    onFocusedFunction : () -> Unit,
+    onFocusFunction : () -> Unit
 ) {
     OutlinedTextField(
-        modifier = modifier.onFocusChanged { if (!it.isFocused) onNextFunction() },
+        modifier = modifier
+            .onFocusChanged {
+                if (it.isFocused) onFocusedFunction() else onNextFunction()
+            }
+            .onFocusEvent {
+                if (it.isFocused) onFocusFunction()
+            },
         readOnly = readOnly,
         enabled = enabled,
         value = fieldValue,
@@ -286,6 +289,7 @@ fun ListFieldSmall(
     modifier : Modifier,
     expandedStatus : Boolean,
     fieldValue : String,
+    label : @Composable (() -> Unit)? = null,
     list : List<String>,
     onExpandedChangeFunction : () -> Unit,
     onDismissRequestFunction : () -> Unit,
@@ -296,11 +300,15 @@ fun ListFieldSmall(
         expanded = expandedStatus,
         onExpandedChange = { onExpandedChangeFunction() }
     ) {
-        TextField(
+        OutlinedTextField(
             value = fieldValue,
             textStyle = MaterialTheme.typography.bodySmall,
             readOnly = true,
             onValueChange = { },
+            label = label,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedStatus)
+            },
             colors = TextFieldDefaults.outlinedTextFieldColors()
         )
         ExposedDropdownMenu(
@@ -309,12 +317,7 @@ fun ListFieldSmall(
         ) {
             list.forEach {
                 DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = it,
-                            //style = MaterialTheme.typography.bodySmall
-                        )
-                    },
+                    text = { Text(text = it) },
                     onClick = { onClickFunction(it) }
                 )
             }
