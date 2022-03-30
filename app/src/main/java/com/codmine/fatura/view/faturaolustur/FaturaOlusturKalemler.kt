@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.codmine.fatura.R
 import com.codmine.fatura.components.*
 import com.codmine.fatura.util.StringToFloat
+import com.codmine.fatura.util.ThousandSeparatorVisualTransformation
 import com.codmine.fatura.viewmodel.FaturaViewModel
 import com.google.accompanist.insets.navigationBarsWithImePadding
 
@@ -242,6 +243,7 @@ fun KalemBilgileri(
             readOnly = true,
             enabled = true,
             label = R.string.label_mal_hizmet_tutari,
+            visualTransformation = ThousandSeparatorVisualTransformation(),
             onValueChangeFunction = { },
             onNextFunction = { },
             onFocusedFunction = { },
@@ -285,6 +287,7 @@ fun KalemBilgileri(
             readOnly = true,
             enabled = true,
             label = R.string.label_kdv_tutari,
+            visualTransformation = ThousandSeparatorVisualTransformation(),
             onValueChangeFunction = { },
             onNextFunction = { },
             onFocusedFunction = { },

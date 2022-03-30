@@ -253,6 +253,7 @@ fun NumberFieldSmall(
     enabled : Boolean,
     fieldValue : TextFieldValue,
     label : Int,
+    visualTransformation : VisualTransformation = VisualTransformation.None,
     onValueChangeFunction : (TextFieldValue) -> Unit,
     onNextFunction : () -> Unit,
     onFocusedFunction : () -> Unit,
@@ -271,7 +272,7 @@ fun NumberFieldSmall(
         value = fieldValue,
         textStyle = MaterialTheme.typography.bodySmall,
         onValueChange = onValueChangeFunction,
-        visualTransformation = VisualTransformation.None,
+        visualTransformation = visualTransformation,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(onNext = { onNextFunction() }),
         label = {
