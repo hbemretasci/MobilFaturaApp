@@ -5,9 +5,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -18,13 +22,13 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.codmine.fatura.R
 import com.codmine.fatura.components.*
-import com.codmine.fatura.util.StringToFloat
 import com.codmine.fatura.util.ThousandSeparatorVisualTransformation
+import com.codmine.fatura.util.stringToFloat
+import com.codmine.fatura.util.textToTextField
 import com.codmine.fatura.viewmodel.FaturaViewModel
 import com.google.accompanist.insets.navigationBarsWithImePadding
 
@@ -45,9 +49,30 @@ fun Kalemler(
             .fillMaxSize()
             .verticalScroll(scrollState)
     ) {
-        KalemBilgileri(viewModel, context, focusManager, snackbarHostState ,keyboardController)
+        KalemlerScreen(viewModel, context, focusManager, snackbarHostState ,keyboardController)
+        //KalemBilgileri(viewModel, context, focusManager, snackbarHostState ,keyboardController)
     }
 }
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun KalemlerScreen(
+    viewModel: FaturaViewModel,
+    context: Context,
+    focusManager: FocusManager,
+    snackbarHostState: SnackbarHostState,
+    keyboardController: SoftwareKeyboardController?)
+{
+    ExtendedFloatingActionButton(
+        onClick = { /* do something */ },
+        icon = { Icon(Icons.Filled.Add, "Localized description") },
+        text = { Text(text = "Extended FAB") },
+    )
+
+}
+
+
+
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class,
     androidx.compose.material3.ExperimentalMaterial3Api::class
@@ -80,7 +105,7 @@ fun KalemBilgileri(
     var kalemKDVTutari by remember { viewModel.kalemKDVTutari }
 
     LaunchedEffect(key1 = true) {
-        viewModel.initializeKalemlerFields()
+        //viewModel.initializeKalemlerFields()
     }
 
     SectionHeader(label = stringResource(id = R.string.label_section4))
@@ -113,10 +138,10 @@ fun KalemBilgileri(
             enabled = true,
             label = R.string.label_miktar,
             onValueChangeFunction = {
-                if (it.text.length <= 3 && !it.text.contains(",")) kalemMiktar = it },
+                if (it.text.length <= 4 && !it.text.contains(",")) kalemMiktar = it },
             onNextFunction = {
                 keyboardController?.hide()
-                kalemMiktar = TextFieldValue(StringToFloat(kalemMiktar.text).toString())
+                kalemMiktar = textToTextField(kalemMiktar.text)
                 viewModel.updateFaturaKalemValues()
                 focusManager.moveFocus(focusDirection = FocusDirection.Next)
             },
@@ -159,17 +184,17 @@ fun KalemBilgileri(
         NumberFieldSmall(
             modifier = Modifier
                 .height(56.dp)
-                .weight(.25f)
+                .weight(.35f)
                 .padding(start = 6.dp),
             fieldValue = kalemBirimFiyat,
             readOnly = false,
             enabled = true,
             label = R.string.label_birim_fiyat,
             onValueChangeFunction = {
-                if (it.text.length <= 4 && !it.text.contains(",")) kalemBirimFiyat = it },
+                if (it.text.length <= 5 && !it.text.contains(",")) kalemBirimFiyat = it },
             onNextFunction = {
                 keyboardController?.hide()
-                kalemBirimFiyat = TextFieldValue(StringToFloat(kalemBirimFiyat.text).toString())
+                kalemBirimFiyat = textToTextField(kalemBirimFiyat.text)
                 viewModel.updateFaturaKalemValues()
                 focusManager.moveFocus(focusDirection = FocusDirection.Next)
             },
@@ -184,18 +209,18 @@ fun KalemBilgileri(
         NumberFieldSmall(
             modifier = Modifier
                 .height(56.dp)
-                .weight(.2f)
+                .weight(.3f)
                 .padding(start = 6.dp),
             fieldValue = kalemIskontoOrani,
             readOnly = false,
             enabled = true,
             label = R.string.label_iskonto_orani,
             onValueChangeFunction = {
-                if (it.text.length <= 5 && !it.text.contains(",") && StringToFloat(it.text) in 0.0..100.0) kalemIskontoOrani = it
+                if (it.text.length <= 5 && !it.text.contains(",") && stringToFloat(it.text) in 0.0..100.0) kalemIskontoOrani = it
             },
             onNextFunction = {
                 keyboardController?.hide()
-                kalemIskontoOrani = TextFieldValue(StringToFloat(kalemIskontoOrani.text).toString())
+                kalemIskontoOrani = textToTextField(kalemIskontoOrani.text)
                 viewModel.updateIskontoOraniValue()
                 viewModel.updateFaturaKalemValues()
                 focusManager.moveFocus(focusDirection = FocusDirection.Next)
@@ -211,7 +236,7 @@ fun KalemBilgileri(
         NumberFieldSmall(
             modifier = Modifier
                 .height(56.dp)
-                .weight(.27f)
+                .weight(.35f)
                 .padding(start = 6.dp),
             fieldValue = kalemIskontoTutari,
             readOnly = false,
@@ -221,7 +246,7 @@ fun KalemBilgileri(
                 if (it.text.length <= 6 && !it.text.contains(",")) kalemIskontoTutari = it },
             onNextFunction = {
                 keyboardController?.hide()
-                kalemIskontoTutari = TextFieldValue(StringToFloat(kalemIskontoTutari.text).toString())
+                kalemIskontoTutari = textToTextField(kalemIskontoTutari.text)
                 viewModel.updateIskontoTutariValue()
                 viewModel.updateFaturaKalemValues()
                 focusManager.moveFocus(focusDirection = FocusDirection.Next)
@@ -234,10 +259,16 @@ fun KalemBilgileri(
             },
             onFocusFunction = { }
         )
+    }
+    Spacer(modifier = Modifier.padding(vertical = 2.dp))
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 6.dp)
+    ) {
         NumberFieldSmall(
             modifier = Modifier
                 .height(56.dp)
-                .weight(.28f)
+                .weight(.35f)
                 .padding(start = 6.dp),
             fieldValue = kalemMalHizmetTutari,
             readOnly = true,
@@ -249,16 +280,10 @@ fun KalemBilgileri(
             onFocusedFunction = { },
             onFocusFunction = { }
         )
-    }
-    Spacer(modifier = Modifier.padding(vertical = 2.dp))
-    Row(
-        modifier = Modifier
-            .padding(horizontal = 6.dp)
-    ) {
         ListFieldSmall(
             modifier = Modifier
                 .height(56.dp)
-                .weight(.5f)
+                .weight(.3f)
                 .padding(start = 6.dp),
             expandedStatus = expandedKDVOrani,
             fieldValue = selectedKDV,
@@ -281,7 +306,7 @@ fun KalemBilgileri(
         NumberFieldSmall(
             modifier = Modifier
                 .height(56.dp)
-                .weight(.5f)
+                .weight(.35f)
                 .padding(start = 6.dp),
             fieldValue = kalemKDVTutari,
             readOnly = true,

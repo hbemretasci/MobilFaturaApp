@@ -5,6 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.codmine.fatura.R
 
@@ -105,7 +106,9 @@ val FaturaTypography = Typography(
         //lineHeight = 16.sp,
         lineHeight = 10.sp,
         //letterSpacing = 0.4.sp
-        letterSpacing = 0.2.sp
+        letterSpacing = 0.2.sp,
+        //sağa hizalama eklendi.
+        textAlign = TextAlign.Right
     ),
     labelLarge = TextStyle(
         fontFamily = MontserratFontFamily,

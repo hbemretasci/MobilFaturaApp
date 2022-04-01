@@ -8,7 +8,6 @@ import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Error
@@ -33,7 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.codmine.fatura.R
 import com.codmine.fatura.components.*
-import com.codmine.fatura.util.StringToFloat
+import com.codmine.fatura.util.stringToFloat
+import com.codmine.fatura.util.textToTextField
 import com.codmine.fatura.viewmodel.FaturaViewModel
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
@@ -424,7 +424,7 @@ fun FaturaBilgileri(
                 if (it.text.length <= 8 && !it.text.contains(",")) faturaDovizKuru = it },
             onNextFunction = {
                 keyboardController?.hide()
-                faturaDovizKuru = TextFieldValue(StringToFloat(faturaDovizKuru.text).toString())
+                faturaDovizKuru = textToTextField(faturaDovizKuru.text)
                 focusManager.moveFocus(focusDirection = FocusDirection.Next)
             },
             onFocusedFunction = {

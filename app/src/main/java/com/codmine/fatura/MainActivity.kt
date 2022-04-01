@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
-import androidx.navigation.compose.rememberNavController
 import com.codmine.fatura.components.MainNavigationGraph
 import com.codmine.fatura.ui.theme.FaturaTheme
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -19,8 +18,8 @@ class MainActivity : ComponentActivity() {
             FaturaTheme {
                 ProvideWindowInsets(
                     windowInsetsAnimationsEnabled = true,
-                    consumeWindowInsets = false,
-                ) {
+                    consumeWindowInsets = false)
+                {
                     MainNavigationGraph()
                 }
             }
